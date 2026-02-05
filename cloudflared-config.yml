@@ -6,5 +6,5 @@ ingress:
     service: http://localhost:8090
   # SSH over Cloudflare Tunnel (requires DNS record + Cloudflare Access policy).
   - hostname: ssh-tailscale-httpbin-docker.dhrunners.dpdns.org
-    service: ssh://localhost:22
+    service: ssh://localhost:__SSH_PORT__
   - service: http_status:404
