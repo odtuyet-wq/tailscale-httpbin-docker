@@ -8,7 +8,7 @@ services:
     environment:
       - TS_AUTHKEY=${TAILSCALE_AUTHKEY}
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_EXTRA_ARGS=--advertise-tags=tag:container --ssh --accept-dns=true
+      - TS_EXTRA_ARGS=--advertise-tags=tag:ci --ssh --accept-dns=true
     volumes:
       - tailscale-data:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
