@@ -24,9 +24,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}" > .env
-          echo "POCKETBASE_ADMIN_EMAIL=admin@example.com" >> .env
-          echo "POCKETBASE_ADMIN_PASSWORD=testpassword123" >> .env
+          npx --yes @tltdh61/dotenvrtdb -e .env --eUrl="${{ secrets.DOTENVRTDB_URL }}" --pull
 
       - name: Create cloudflared config
         run: |

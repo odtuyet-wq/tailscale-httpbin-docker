@@ -1,1 +1,44 @@
+# Main
+.env
+.env.*
+.npm-multi-publish-tmp
+push-env*
+pull-env*
 cloudflared-credentials.json
+
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Runtime data
+.runner-data/
+*.log
+*.pid
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build
+dist/
+build/
+coverage/
+
+# Temporary
+tmp/
+temp/
+*.tmp
