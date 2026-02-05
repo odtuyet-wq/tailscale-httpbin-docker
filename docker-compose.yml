@@ -5,7 +5,6 @@ services:
     container_name: ts-authkey-test
     hostname: authkey-test
     environment:
-      - TS_AUTHKEY=${{ secrets.TS_AUTHKEY }} # Lấy từ GitHub Secrets
       - TS_CLIENT_ID=${{ secrets.TS_CLIENT_ID }} # Lấy từ GitHub Secrets
       - TS_CLIENT_SECRET=${{ secrets.TS_CLIENT_SECRET }} # Lấy từ GitHub Secrets
       - TS_STATE_DIR=/var/lib/tailscale
