@@ -25,8 +25,11 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: Start Docker Compose Services
+        env:
+          TS_CLIENT_ID: ${{ secrets.TS_CLIENT_ID }} # Truyền biến môi trường từ GitHub Secrets
+          TS_CLIENT_SECRET: ${{ secrets.TS_CLIENT_SECRET }} # Truyền biến môi trường từ GitHub Secrets
         run: |
-          docker-compose up -d
+          docker-compose up -d  # Docker Compose sẽ sử dụng các biến môi trường này
 
       - name: Wait for services to initialize
         run: |
