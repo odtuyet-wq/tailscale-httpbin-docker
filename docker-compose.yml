@@ -21,6 +21,14 @@ services:
     container_name: pocketbase
     restart: unless-stopped
     network_mode: "host"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        : "$${POCKETBASE_ADMIN_EMAIL:?POCKETBASE_ADMIN_EMAIL is required}"
+        : "$${POCKETBASE_ADMIN_PASSWORD:?POCKETBASE_ADMIN_PASSWORD is required}"
+        pocketbase --dir=/pb/pb_data superuser upsert "$${POCKETBASE_ADMIN_EMAIL}" "$${POCKETBASE_ADMIN_PASSWORD}"
+        exec pocketbase --dir=/pb/pb_data serve --http=0.0.0.0:8090
     volumes:
       - pocketbase-data:/pb/pb_data
     healthcheck:
@@ -45,4 +53,4 @@ services:
 
 volumes:
   tailscale-data:
-  # pocketbase-data:
+  pocketbase-data:
