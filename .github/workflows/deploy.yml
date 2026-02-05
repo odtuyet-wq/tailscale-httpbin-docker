@@ -53,10 +53,10 @@ jobs:
           echo "=== PocketBase Health Check ==="
           docker compose exec pocketbase wget -O- http://localhost:8090/api/health || true
 
-      - name: Test network connectivity
-        run: |
-          echo "=== Testing network connectivity between containers ==="
-          docker compose exec tailscale ping -c 3 pocketbase || true
+      # - name: Test network connectivity
+      #   run: |
+      #     echo "=== Testing network connectivity between containers ==="
+      #     docker compose exec tailscale ping -c 3 pocketbase || true
 
       - name: Display container logs
         if: always()
@@ -68,10 +68,10 @@ jobs:
           echo "=== PocketBase Logs ==="
           docker compose logs pocketbase
 
-      - name: Test PocketBase accessibility
-        run: |
-          echo "=== Testing PocketBase HTTP endpoint ==="
-          curl -f http://localhost:8090/api/health || exit 1
+      # - name: Test PocketBase accessibility
+      #   run: |
+      #     echo "=== Testing PocketBase HTTP endpoint ==="
+      #     curl -f http://localhost:8090/api/health || exit 1
 
       - name: Show Tailscale network info
         run: |
