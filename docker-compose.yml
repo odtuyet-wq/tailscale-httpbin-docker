@@ -1,26 +1,44 @@
-version: "3.7"
-services:
-  ts-authkey-test:
-    image: tailscale/tailscale:latest
-    container_name: ts-authkey-test
-    hostname: authkey-test
-    environment:
-      - TS_CLIENT_ID=${TS_CLIENT_ID} # Sử dụng biến môi trường từ GitHub Actions
-      - TS_CLIENT_SECRET=${TS_CLIENT_SECRET} # Sử dụng biến môi trường từ GitHub Actions
-      - TS_STATE_DIR=/var/lib/tailscale # Mặc định
-      - TS_USERSPACE=false # Mặc định
-    volumes:
-      - ./ts-state:/var/lib/tailscale # Mặc định lưu trữ trạng thái Tailscale
-    devices:
-      - /dev/net/tun:/dev/net/tun # Mặc định để tạo giao diện mạng ảo
-    cap_add:
-      - net_admin # Mặc định để cấp quyền mạng cho container
-    restart: unless-stopped # Mặc định để tự động khởi động lại nếu cần
+version: "3.8"
 
-  httpbin-test:
-    image: kennethreitz/httpbin
-    container_name: httpbin-test
-    network_mode: service:ts-authkey-test # Chia sẻ mạng với Tailscale container
+services:
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: tailscale
+    hostname: github-runner
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container --ssh --accept-dns=true
+    volumes:
+      - tailscale-data:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: pocketbase
+    restart: unless-stopped
     ports:
-      - "80:80" # Mở cổng 80 để truy cập httpbin
-    restart: unless-stopped # Mặc định để tự động khởi động lại nếu cần
+      - "8080:8080"
+    volumes:
+      - pocketbase-data:/pb/pb_data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - app-network
+
+volumes:
+  tailscale-data:
+  pocketbase-data:
+
+networks:
+  app-network:
+    driver: bridge
