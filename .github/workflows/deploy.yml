@@ -21,6 +21,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}" > .env
+          echo "POCKETBASE_ADMIN_EMAIL=admin@example.com" >> .env
+          echo "POCKETBASE_ADMIN_PASSWORD=testpassword123" >> .env
 
       - name: Start services
         run: |
@@ -32,7 +34,7 @@ jobs:
           sleep 10
 
           echo "Waiting for PocketBase to be ready..."
-          timeout 60 bash -c 'until docker compose exec -T pocketbase wget --spider -q http://localhost:8080/api/health 2>/dev/null; do sleep 2; done'
+          timeout 60 bash -c 'until docker compose exec -T pocketbase wget --spider -q http://localhost:8090/api/health 2>/dev/null; do sleep 2; done'
 
       - name: Check Tailscale status
         run: |
@@ -46,7 +48,7 @@ jobs:
       - name: Check PocketBase status
         run: |
           echo "=== PocketBase Health Check ==="
-          docker compose exec pocketbase wget -O- http://localhost:8080/api/health || true
+          docker compose exec pocketbase wget -O- http://localhost:8090/api/health || true
 
       - name: Test network connectivity
         run: |
@@ -66,7 +68,7 @@ jobs:
       - name: Test PocketBase accessibility
         run: |
           echo "=== Testing PocketBase HTTP endpoint ==="
-          curl -f http://localhost:8080/api/health || exit 1
+          curl -f http://localhost:8090/api/health || exit 1
 
       - name: Show Tailscale network info
         run: |
