@@ -14,14 +14,12 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     restart: unless-stopped
-    # Bỏ networks đi
 
   pocketbase:
     image: ghcr.io/muchobien/pocketbase:latest
     container_name: pocketbase
     restart: unless-stopped
-    network_mode: "service:tailscale" # ← Thêm dòng này
-    # Bỏ ports mapping đi vì dùng chung network với tailscale
+    network_mode: "service:tailscale"
     volumes:
       - pocketbase-data:/pb/pb_data
     healthcheck:
@@ -29,10 +27,21 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    # Bỏ networks đi
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - app-network
 
 volumes:
   tailscale-data:
   pocketbase-data:
 
-# Bỏ networks definition đi
+networks:
+  app-network:
+    driver: bridge
