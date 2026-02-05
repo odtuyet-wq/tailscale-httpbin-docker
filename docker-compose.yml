@@ -36,16 +36,13 @@ services:
     container_name: cloudflared
     restart: unless-stopped
     command: tunnel --config /etc/cloudflared/config.yml run
+    # Share network namespace with tailscale so localhost:8090 points to PocketBase.
+    network_mode: "service:tailscale"
     volumes:
       - ./cloudflared-config.yml:/etc/cloudflared/config.yml:ro
       - ./cloudflared-credentials.json:/etc/cloudflared/credentials.json:ro
-    networks:
-      - app-network
 
 volumes:
   tailscale-data:
   pocketbase-data:
 
-networks:
-  app-network:
-    driver: bridge

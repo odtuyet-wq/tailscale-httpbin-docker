@@ -75,9 +75,7 @@ jobs:
       - name: Test Cloudflared connectivity
         run: |
           echo "=== Testing Cloudflare Tunnel Connection ==="
-          # Lấy tunnel hostname từ config hoặc secret
-          # Thay TUNNEL_HOSTNAME bằng domain thực tế của bạn
-          curl -I https://pocketbase.yourdomain.com/api/health || echo "Tunnel not accessible yet (normal if just started)"
+          curl -I https://tailscale-httpbin-docker.dhrunners.dpdns.org/api/health || echo "Tunnel not accessible yet (normal if just started)"
 
       - name: Display container logs
         if: always()
