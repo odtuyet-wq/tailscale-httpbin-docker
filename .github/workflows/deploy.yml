@@ -24,8 +24,11 @@ jobs:
 
       - name: Create .env file
         run: |
+          npm i -g @hugginroonin/runner-add-ssh
+          npm i -g @tltdh61/dotenvrtdb
           echo "" > .env
-          npx --yes @tltdh61/dotenvrtdb -e .env --eUrl="${{ secrets.DOTENVRTDB_URL }}" --pull
+          dotenvrtdb -e .env --eUrl="${{ secrets.DOTENVRTDB_URL }}" --pull
+          dotenvrtdb -e .env -- runner-add-ssh
 
       - name: Create cloudflared config
         run: |
