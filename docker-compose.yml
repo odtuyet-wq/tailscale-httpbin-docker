@@ -6,7 +6,7 @@ services:
     environment:
       - TS_AUTHKEY=${TAILSCALE_AUTHKEY}
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_EXTRA_ARGS=--advertise-tags=tag:ci --ssh --accept-dns=true
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container --ssh --accept-dns=true
     volumes:
       - tailscale-data:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
@@ -25,13 +25,14 @@ services:
       # Tự động tạo admin account khi khởi động lần đầu
       - POCKETBASE_ADMIN_EMAIL=${POCKETBASE_ADMIN_EMAIL:-admin@example.com}
       - POCKETBASE_ADMIN_PASSWORD=${POCKETBASE_ADMIN_PASSWORD:-admin123456}
+    entrypoint: /bin/sh
     command: >
-      sh -c "
+      -c "
       /pb/pocketbase serve --http=0.0.0.0:8090 &
-      PB_PID=$$!
-      sleep 5
-      /pb/pocketbase superuser upsert $${POCKETBASE_ADMIN_EMAIL} $${POCKETBASE_ADMIN_PASSWORD} || true
-      wait $$PB_PID
+      PB_PID=\$$!;
+      sleep 5;
+      /pb/pocketbase superuser upsert \$$POCKETBASE_ADMIN_EMAIL \$$POCKETBASE_ADMIN_PASSWORD || true;
+      wait \$$PB_PID
       "
     ports:
       - "8090:8090"
