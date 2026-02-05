@@ -49,16 +49,9 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
     restart: unless-stopped
-    entrypoint:
-      - /bin/sh
-      - -ec
-      - |
-        sed "s/__SSH_PORT__/$${SSH_PORT}/g" /etc/cloudflared/config.yml > /tmp/cloudflared-config.yml
-        exec cloudflared tunnel --config /tmp/cloudflared-config.yml run
+    command: tunnel --config /etc/cloudflared/config.yml run
     # Run on host network so tunnel can reach localhost services (PocketBase, SSH, etc.).
     network_mode: "host"
-    environment:
-      - SSH_PORT=${SSH_PORT:-2222}
     volumes:
       - ./cloudflared-config.yml:/etc/cloudflared/config.yml:ro
       - ./cloudflared-credentials.json:/etc/cloudflared/credentials.json:ro
