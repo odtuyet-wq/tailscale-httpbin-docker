@@ -5,10 +5,11 @@ services:
     hostname: github-runner
     network_mode: "host"
     environment:
-      - TAILSCALE_CLIENT_SECRET=${TAILSCALE_CLIENT_SECRET}
+      # tailscale/tailscale uses TS_AUTHKEY (auth key or OAuth client secret).
+      - TS_AUTHKEY=${TAILSCALE_CLIENT_SECRET}
       - TS_CLIENT_ID=${TS_CLIENT_ID}
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_EXTRA_ARGS=--advertise-tags=tag:ci --ssh --accept-dns=true --accept-routes
+      - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS:-tag:ci} --ssh --accept-dns=true --accept-routes
     volumes:
       - tailscale-data:/var/lib/tailscale
       - /dev/net/tun:/dev/net/tun
