@@ -30,7 +30,9 @@ jobs:
 
       - name: Create cloudflared config
         run: |
-          echo "${{ secrets.CLOUDFLARED_CREDENTIALS }}" > cloudflared-credentials.json
+          cat << 'EOF' > cloudflared-credentials.json
+          ${{ secrets.CLOUDFLARED_CREDENTIALS }}
+          EOF
 
       - name: Start services
         run: |

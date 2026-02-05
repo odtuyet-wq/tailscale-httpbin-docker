@@ -27,6 +27,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    environment:
+      - POCKETBASE_ADMIN_EMAIL=${POCKETBASE_ADMIN_EMAIL}
+      - POCKETBASE_ADMIN_PASSWORD=${POCKETBASE_ADMIN_PASSWORD}
 
   cloudflared:
     image: cloudflare/cloudflared:latest
