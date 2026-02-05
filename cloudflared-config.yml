@@ -1,0 +1,10 @@
+tunnel: bd42e2a6-0d91-4761-89af-f7e8b302f3a3
+credentials-file: /etc/cloudflared/credentials.json
+
+ingress:
+  - hostname: tailscale-httpbin-docker.dhrunners.dpdns.org
+    service: http://localhost:8090
+  # Có thể thêm nhiều hostname khác
+  # - hostname: another.yourdomain.com
+  #   service: http://pocketbase:8091
+  - service: http_status:404

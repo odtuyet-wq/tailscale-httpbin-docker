@@ -26,6 +26,9 @@ jobs:
           echo "TAILSCALE_AUTHKEY=${{ secrets.TAILSCALE_AUTHKEY }}" > .env
           echo "POCKETBASE_ADMIN_EMAIL=admin@example.com" >> .env
           echo "POCKETBASE_ADMIN_PASSWORD=testpassword123" >> .env
+      - name: Create cloudflared config
+        run: |
+          echo "${{ secrets.CLOUDFLARED_CREDENTIALS }}" > cloudflared-credentials.json
 
       - name: Start services
         run: |
