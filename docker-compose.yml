@@ -3,6 +3,7 @@ services:
     image: tailscale/tailscale:latest
     container_name: tailscale
     hostname: github-runner
+    network_mode: "host"
     environment:
       - TS_AUTHKEY=${TAILSCALE_AUTHKEY}
       - TS_STATE_DIR=/var/lib/tailscale
@@ -19,7 +20,7 @@ services:
     image: ghcr.io/muchobien/pocketbase:latest
     container_name: pocketbase
     restart: unless-stopped
-    network_mode: "service:tailscale"
+    network_mode: "host"
     volumes:
       - pocketbase-data:/pb/pb_data
     healthcheck:
@@ -36,13 +37,12 @@ services:
     container_name: cloudflared
     restart: unless-stopped
     command: tunnel --config /etc/cloudflared/config.yml run
-    # Share network namespace with tailscale so localhost:8090 points to PocketBase.
-    network_mode: "service:tailscale"
+    # Run on host network so tunnel can reach localhost services (PocketBase, SSH, etc.).
+    network_mode: "host"
     volumes:
       - ./cloudflared-config.yml:/etc/cloudflared/config.yml:ro
       - ./cloudflared-credentials.json:/etc/cloudflared/credentials.json:ro
 
 volumes:
   tailscale-data:
-  pocketbase-data:
-
+  # pocketbase-data:

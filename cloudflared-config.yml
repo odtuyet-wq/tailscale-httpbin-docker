@@ -4,7 +4,7 @@ credentials-file: /etc/cloudflared/credentials.json
 ingress:
   - hostname: tailscale-httpbin-docker.dhrunners.dpdns.org
     service: http://localhost:8090
-  # Có thể thêm nhiều hostname khác
-  # - hostname: another.yourdomain.com
-  #   service: http://pocketbase:8091
+  # SSH over Cloudflare Tunnel (requires DNS record + Cloudflare Access policy).
+  - hostname: ssh-tailscale-httpbin-docker.dhrunners.dpdns.org
+    service: ssh://localhost:22
   - service: http_status:404
