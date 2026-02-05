@@ -7,6 +7,7 @@ services:
     environment:
       # Official image reads TS_AUTHKEY (auth key or OAuth client secret key).
       - TS_AUTHKEY=${TAILSCALE_CLIENT_SECRET}
+      - TS_USERSPACE=false
       # Forward inbound tailnet traffic to host localhost services (for SSH use :22).
       - TS_DEST_IP=127.0.0.1
       - TS_STATE_DIR=/var/lib/tailscale
