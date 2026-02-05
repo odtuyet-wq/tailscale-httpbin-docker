@@ -14,15 +14,14 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     restart: unless-stopped
-    networks:
-      - app-network
+    # Bỏ networks đi
 
   pocketbase:
     image: ghcr.io/muchobien/pocketbase:latest
     container_name: pocketbase
     restart: unless-stopped
-    ports:
-      - "8090:8090"
+    network_mode: "service:tailscale" # ← Thêm dòng này
+    # Bỏ ports mapping đi vì dùng chung network với tailscale
     volumes:
       - pocketbase-data:/pb/pb_data
     healthcheck:
@@ -30,13 +29,10 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    networks:
-      - app-network
+    # Bỏ networks đi
 
 volumes:
   tailscale-data:
   pocketbase-data:
 
-networks:
-  app-network:
-    driver: bridge
+# Bỏ networks definition đi
