@@ -21,7 +21,7 @@ services:
     container_name: pocketbase
     restart: unless-stopped
     network_mode: "host"
-    command:
+    entrypoint:
       - /bin/sh
       - -ec
       - |
