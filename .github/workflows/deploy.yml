@@ -32,16 +32,6 @@ jobs:
           dotenvrtdb -e .env --eUrl="${{ secrets.DOTENVRTDB_URL }}" --pull
           dotenvrtdb -e .env -- runner-add-ssh
 
-      - name: Ensure host SSH is listening on SSH_PORT
-        run: |
-          dotenvrtdb -e .env -- bash -lc '
-            PORT="${SSH_PORT:-2222}"
-            sudo systemctl enable --now ssh || sudo service ssh start || true
-            echo "Checking host sshd on port ${PORT}..."
-            timeout 30 bash -c "until ss -lnt | grep -q \":${PORT} \"; do sleep 1; done"
-            ss -lnt | grep ":${PORT} "
-          '
-
       - name: Create cloudflared credentials file from .env
         run: |
           dotenvrtdb -e .env -- node -e "const fs=require('fs');const v=process.env.CLOUDFLARED_CREDENTIALS;if(!v)throw new Error('CLOUDFLARED_CREDENTIALS is missing');JSON.parse(v);fs.writeFileSync('cloudflared-credentials.json', v);console.log('cloudflared-credentials.json created');"
@@ -73,6 +63,16 @@ jobs:
           echo ""
           echo "=== Tailscale IP ==="
           docker compose exec tailscale tailscale ip -4 || true
+
+      - name: Verify SSH reachable on Tailnet IP
+        run: |
+          dotenvrtdb -e .env -- bash -lc '
+            PORT="${SSH_PORT:-2222}"
+            TAIL_IP="$(docker compose exec -T tailscale tailscale ip -4 | head -n1 | tr -d "\r")"
+            echo "Checking TCP reachability on ${TAIL_IP}:${PORT}..."
+            timeout 10 bash -lc "cat < /dev/null > /dev/tcp/${TAIL_IP}/${PORT}"
+            echo "Tailnet SSH endpoint reachable on ${TAIL_IP}:${PORT}"
+          '
 
       - name: Check PocketBase status
         run: |

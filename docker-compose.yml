@@ -8,10 +8,8 @@ services:
       # Official image reads TS_AUTHKEY (auth key or OAuth client secret key).
       - TS_AUTHKEY=${TAILSCALE_CLIENT_SECRET}
       - TS_USERSPACE=false
-      # Forward inbound tailnet traffic to host localhost services (for SSH use :22).
-      - TS_DEST_IP=127.0.0.1
       - TS_STATE_DIR=/var/lib/tailscale
-      # Do not enable Tailscale SSH in container; forward SSH to host sshd instead.
+      # Do not enable Tailscale SSH in container; use host sshd on SSH_PORT.
       - TS_EXTRA_ARGS=--advertise-tags=${TAILSCALE_TAGS:-tag:ci} --accept-dns=true --accept-routes
     volumes:
       - tailscale-data:/var/lib/tailscale
